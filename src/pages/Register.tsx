@@ -5,6 +5,8 @@ import InputErrorMessage from "./ErorrMassge";
 import { RegisterForm } from "../Componets/ui/data";
 import  {yupResolver} from "@hookform/resolvers/yup";
 import {  registerSchema } from "./Valdition";
+import axiosInstance from "../config/axios.config";
+import toast from "react-hot-toast";
 
 
 interface IFormInput {
@@ -17,10 +19,39 @@ const RegisterPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
       resolver: yupResolver(registerSchema),
     });
-    const onSubmit: SubmitHandler<IFormInput> = (data) => {
+
+
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         console.log(data);
-    };
-    console.log(errors);
+    
+    
+    try {
+   const res =  await axiosInstance.post('/auth/local/register', data);
+        console.log('Registration successful');
+        console.log(res);
+        
+      // if(status === 200){
+      //   toast.success('You will navigate to login page after 4 seconds !' ,{
+      //     position: 'top-center',
+      //     duration: 4000,
+      //     style: {
+      //       backgroundColor: "black",
+      //       color: "white",
+      //       width: "fit-content",
+      //     }
+      //   });
+        
+      // }
+
+
+
+    } catch (error) {
+      console.log(error);      
+    }
+    
+    
+      };
+    // console.log(errors);
 
     const registerForm = RegisterForm.map(({ name, placeholder, type, Validation }) => (
         <div key={name}>
@@ -38,7 +69,7 @@ const RegisterPage = () => {
             <h1 className="mb-3 text-3xl font-semibold text-center">Register Now !</h1>
             <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                 {registerForm}
-                <Button type="submit">Register</Button>
+                <Button className="w-full cursor-pointer" type="submit">Register</Button>
             </form>
         </div>
     );
