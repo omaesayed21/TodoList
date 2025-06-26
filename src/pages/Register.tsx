@@ -50,7 +50,7 @@ const RegisterPage = () => {
       }
     } catch (error) {
       const errorObj = error as AxiosError<IErrorResponse>
-      console.log(errorObj.response?.data?.error?.message);
+      // console.log(errorObj.response?.data?.error?.message);
           toast.error(`${errorObj.response?.data?.error?.message}` , {
             position: 'top-center',
             duration: 4000,});   
@@ -61,8 +61,11 @@ const RegisterPage = () => {
     
     
       };
+
     // console.log(errors);
 
+    
+// Render the form
     const registerForm = RegisterForm.map(({ name, placeholder, type, Validation }) => (
         <div key={name}>
             <Input

@@ -15,3 +15,14 @@ export interface IErrorResponse {
         message? : string
     }
 }
+
+export interface Ilogininput {
+    name : "identifier" | "password"
+    placeholder : string
+    type : string
+    Validation : {
+        required ?: boolean
+        minLength? : number
+        pattern? : RegExp
+}
+}
