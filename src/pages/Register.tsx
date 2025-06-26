@@ -26,22 +26,20 @@ const RegisterPage = () => {
     
     
     try {
-   const res =  await axiosInstance.post('/auth/local/register', data);
-        console.log('Registration successful');
-        console.log(res);
+   const {status} =  await axiosInstance.post('/auth/local/register', data);
+        console.log('Registration successful');        
+      if(status === 200){
+        toast.success('You will navigate to login page after 4 seconds !' ,{
+          position: 'top-center',
+          duration: 4000,
+          style: {
+            backgroundColor: "black",
+            color: "white",
+            width: "fit-content",
+          }
+        });
         
-      // if(status === 200){
-      //   toast.success('You will navigate to login page after 4 seconds !' ,{
-      //     position: 'top-center',
-      //     duration: 4000,
-      //     style: {
-      //       backgroundColor: "black",
-      //       color: "white",
-      //       width: "fit-content",
-      //     }
-      //   });
-        
-      // }
+      }
 
 
 
