@@ -3,6 +3,9 @@ import Button from "../Componets/ui/Button";
 import Input from "../Componets/ui/input";
 import InputErrorMessage from "./ErorrMassge";
 import { RegisterForm } from "../Componets/ui/data";
+import  {yupResolver} from "@hookform/resolvers/yup";
+import {  registerSchema } from "./Valdition";
+
 
 interface IFormInput {
     username: string;
@@ -11,7 +14,9 @@ interface IFormInput {
 }
 
 const RegisterPage = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>();
+    const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
+      resolver: yupResolver(registerSchema),
+    });
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
         console.log(data);
     };
