@@ -7,6 +7,9 @@ import  {yupResolver} from "@hookform/resolvers/yup";
 import {  registerSchema } from "./Valdition";
 import axiosInstance from "../config/axios.config";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import type { AxiosError } from "axios";
+import type { IErrorResponse } from "../Interface";
 
 
 interface IFormInput {
@@ -16,18 +19,23 @@ interface IFormInput {
 }
 
 const RegisterPage = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
-      resolver: yupResolver(registerSchema),
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
+    resolver: yupResolver(registerSchema),
     });
 
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         console.log(data);
+        setIsLoading(true);
     
     
     try {
    const {status} =  await axiosInstance.post('/auth/local/register', data);
-        console.log('Registration successful');        
+        console.log('Registration successful');   
+
       if(status === 200){
         toast.success('You will navigate to login page after 4 seconds !' ,{
           position: 'top-center',
@@ -40,11 +48,15 @@ const RegisterPage = () => {
         });
         
       }
-
-
-
     } catch (error) {
-      console.log(error);      
+      const errorObj = error as AxiosError<IErrorResponse>
+      console.log(errorObj.response?.data?.error?.message);
+          toast.error(`${errorObj.response?.data?.error?.message}` , {
+            position: 'top-center',
+            duration: 4000,});   
+
+    }finally{
+      setIsLoading(false);
     }
     
     
@@ -67,10 +79,12 @@ const RegisterPage = () => {
             <h1 className="mb-3 text-3xl font-semibold text-center">Register Now !</h1>
             <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                 {registerForm}
-                <Button className="w-full cursor-pointer" type="submit">Register</Button>
+                <Button isLoading={isLoading} fullWidth   type="submit">
+             
+      Try Now           
+                </Button>
             </form>
         </div>
     );
 };
-
 export default RegisterPage;
