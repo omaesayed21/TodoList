@@ -12,7 +12,6 @@ import TodosPage from "../pages/Todos";
 import ErrorHandler from "../Componets/ui/erorrs/ErorrHandler";
 import PageNotFound from "../pages/PageNotFound";
 
-// helper function to get user
 const getUser = () => {
   const userDataString = localStorage.getItem("loggedInUser");
   return userDataString ? JSON.parse(userDataString) : null;

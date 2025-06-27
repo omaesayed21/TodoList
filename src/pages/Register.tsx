@@ -70,8 +70,8 @@ const RegisterPage = () => {
 
 
 // Render the form
-    const registerForm = RegisterForm.map(({ name, placeholder, type, Validation }) => (
-        <div key={name}>
+    const registerForm = RegisterForm.map(({ name, placeholder, type, Validation } , index) => (
+        <div key={index}>
             <Input
                 type={type}
                 placeholder={placeholder}
