@@ -8,6 +8,7 @@ interface IProps {
   data?: unknown;
 }
 
+
 const ProtectedRoute = ({
   isAllowed,
   redirectPath,
