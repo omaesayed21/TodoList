@@ -2,10 +2,20 @@ import Button from "./Button"
 import useAuthenticatedQuery from "../../hooks/useAuthenticatedQuery";
 import Modal from "./Modal";
 import Input from "./input";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Textarea } from "./Textarea";
+import type { ITodo } from "../../Interface";
+import axiosInstance from "../../config/axios.config";
 
 const TodoList = () =>{
     const [isEditModalOpen , setIsEditModalOpen] = useState(false)
+    const [todoToEdit , setTodoToEdit] = useState<ITodo>({
+        documentId : "",
+        id : 0,
+        title : "",
+        description : ""
+    })
+    const[isUpdateing , setIsUpdating] = useState(false)
 
 
         const userDataString = localStorage.getItem("loggedInUser");
@@ -15,15 +25,57 @@ const TodoList = () =>{
    
    config : {headers : {Authorization : `Bearer ${userData.jwt}`}} ,
    
-   queryKey : ["todos"]})
+   queryKey : ["todos"  , todoToEdit.documentId]
+   
+   })
    
 
 
+// handle Edit Modal
+   const onCloseEditModal = () => {
+    setTodoToEdit({
+        documentId : "",
+        id : 0,
+        title : "",
+        description : ""
+    })
+    setIsEditModalOpen(false) }
 
-   const onToggleEditModal = () => {
-    setIsEditModalOpen(prev => !prev)
+    const onOpenEditModal = (todo :ITodo) => {
+        setTodoToEdit(todo)
+        setIsEditModalOpen(true)
+        
+    }
+   const onChangeHandler = (e :React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+       const {name , value} = e.target
+       setTodoToEdit({...todoToEdit , [name] : value})
    }
-   
+   const onSubmitHandler = async (e :React.FormEvent<HTMLFormElement>) => {
+       e.preventDefault()
+       setIsUpdating(true)
+       const {title , description} = todoToEdit
+       try {
+ const{ status }=       await axiosInstance.put(`/todos/${todoToEdit.documentId}` , {data : 
+            {
+                title : title,
+                description : description
+            }
+        } , {
+            headers : {
+                Authorization : `Bearer ${userData.jwt}`
+            }
+        })
+
+        if(status === 200){
+            onCloseEditModal()
+        }
+       }catch (error) {
+           console.log(error);
+           
+       } finally{
+        setIsUpdating(false)
+       }
+   }
 //    useQuery({
 
 //     queryKey: ["todos"],
@@ -55,11 +107,11 @@ if(error){
     { data.todos.length  ?  (
 
 
-        data.todos.map(todo => (
+        data.todos.map((todo :ITodo) => (
             <div key={todo.id} className=" flex justify-between items-center  hover:bg-slate-200  duration-300 rounded-md p-2">
             <p  className=" w-full font-semibold">{todo.title}</p>
             <div className=" flex gap-2 items-center justify-end  space-x-3">
-                <Button  size={"sm"} onClick={onToggleEditModal}>Edit</Button>
+                <Button  size={"sm"} onClick= {() => onOpenEditModal(todo)}>Edit</Button>
                 <Button variant={"danger"} size={"sm"}>Remove</Button>
             </div>
 
@@ -70,15 +122,16 @@ if(error){
         )
 
         }   
-        <Modal isOpen={isEditModalOpen} closeModal={onToggleEditModal} title="Edit Todo">
-        <Input value=" Edit Title" placeholder="Title" />
-        <Input placeholder="Description" />
-       <div className=" flex gap-2 items-center justify-end  space-x-3 mt-3">
-       <Button className="bg-indigo-600  hover:bg-indigo-700">Save</Button>
-        <Button   onClick={onToggleEditModal} variant={"cancel"}>Cancel</Button>
+        <Modal  isOpen={isEditModalOpen} closeModal={onCloseEditModal} title="Edit Todo">
+       <form onSubmit={onSubmitHandler} className=" space-y-3">
+       <Input  name="title" value={todoToEdit.title} onChange={onChangeHandler}/>
+        <Textarea name="description" value={todoToEdit.description} onChange={onChangeHandler} />
+       <div className=" flex gap-2 items-center   space-x-3 mt-3">
+       <Button className="bg-indigo-600   hover:bg-indigo-700" isLoading={isUpdateing}>Update</Button>
+        <Button   onClick={onCloseEditModal} variant={"cancel"}>Cancel</Button>
        </div>
+       </form>
         </Modal>
-            
             
 
     </div>

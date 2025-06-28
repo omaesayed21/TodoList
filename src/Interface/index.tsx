@@ -26,3 +26,9 @@ export interface Ilogininput {
         pattern? : RegExp
 }
 }
+export interface ITodo {
+    documentId: string
+    id : number
+    title : string
+    description : string
+}
