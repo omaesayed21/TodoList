@@ -17,6 +17,8 @@ const TodoList = () =>{
         description : ""
     })
     const[isUpdateing , setIsUpdating] = useState(false)
+    const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
+
 
 
         const userDataString = localStorage.getItem("loggedInUser");
@@ -27,25 +29,33 @@ const TodoList = () =>{
    config : {headers : {Authorization : `Bearer ${userData.jwt}`}} ,
    
    queryKey : ["todos"  , todoToEdit.documentId]
+
+
    
    })
    
 
 
 // handle Edit Modal
-   const onCloseEditModal = () => {
+   const onCloseModal = () => {
     setTodoToEdit({
         documentId : "",
         id : 0,
         title : "",
         description : ""
     })
-    setIsEditModalOpen(false) }
+    setIsEditModalOpen(false)
+setIsOpenConfirmModal(false)
+}
 
-    const onOpenEditModal = (todo :ITodo) => {
+    const onOpenModal = (todo :ITodo) => {
         setTodoToEdit(todo)
-        setIsEditModalOpen(true)
-        
+        setIsEditModalOpen(true)        
+    }
+    const onOpenConfirmModal = (todo :ITodo) => {
+        setTodoToEdit(todo)
+        setIsOpenConfirmModal(true)
+
     }
    const onChangeHandler = (e :React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
        const {name , value} = e.target
@@ -68,7 +78,7 @@ const TodoList = () =>{
         })
 
         if(status === 200){
-            onCloseEditModal()
+        onCloseModal()
             toast.success("Todo updated successfully !")
         }
        }catch (error) {
@@ -113,8 +123,8 @@ if(error){
             <div key={todo.id} className=" flex justify-between items-center  hover:bg-slate-200  duration-300 rounded-md p-2">
             <p  className=" w-full font-semibold">{todo.title}</p>
             <div className=" flex gap-2 items-center justify-end  space-x-3">
-                <Button  size={"sm"} onClick= {() => onOpenEditModal(todo)}>Edit</Button>
-                <Button variant={"danger"} size={"sm"}>Remove</Button>
+                <Button  size={"sm"} onClick= {() => onOpenModal(todo)}>Edit</Button>
+                <Button variant={"danger"} size={"sm"}  onClick={() => onOpenConfirmModal(todo)}>Remove</Button>
             </div>
 
         </div>
@@ -123,18 +133,35 @@ if(error){
             <p className=" text-center text-5xl text-gray-500">No todos found</p>
         )
 
-        }   
-        <Modal  isOpen={isEditModalOpen} closeModal={onCloseEditModal} title="Edit Todo">
+        }  
+
+
+        {/* Edit Modal  */}
+
+        <Modal  isOpen={isEditModalOpen} closeModal={onCloseModal} title="Edit Todo">
        <form onSubmit={onSubmitHandler} className=" space-y-3">
        <Input  name="title" value={todoToEdit.title} onChange={onChangeHandler}/>
         <Textarea name="description" value={todoToEdit.description} onChange={onChangeHandler} />
        <div className=" flex gap-2 items-center   space-x-3 mt-3">
        <Button className="bg-indigo-600   hover:bg-indigo-700" isLoading={isUpdateing}>Update</Button>
-        <Button   onClick={onCloseEditModal} variant={"cancel"}>Cancel</Button>
+        <Button   onClick={onCloseModal} variant={"cancel"}>Cancel</Button>
        </div>
        </form>
+      
+      {/* Delete Modal */}
+
         </Modal>
-            
+            <Modal isOpen={isOpenConfirmModal}  closeModal={onCloseModal}  title={"Are you sure you want to remove this todo from your store ?"}          description="Deleting this todo will remove it permenantly from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action.">
+            <div className="flex items-center space-x-3 mt-4">
+          <Button variant="danger">
+            Yes , Remove
+          </Button>
+          <Button variant="cancel" type="button" onClick={onCloseModal} >
+            Cancel
+          </Button>
+        </div>      
+        
+                </Modal> 
 
     </div>
     
