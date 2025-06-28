@@ -1,6 +1,4 @@
 import Button from "./Button"
-import axiosInstance from "../../config/axios.config"
-import { useQuery } from "@tanstack/react-query";
 import useAuthenticatedQuery from "../../hooks/useAuthenticatedQuery";
 
 const TodoList = () =>{
