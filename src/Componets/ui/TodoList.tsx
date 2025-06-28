@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { Textarea } from "./Textarea";
 import type { ITodo } from "../../Interface";
 import axiosInstance from "../../config/axios.config";
+import toast from "react-hot-toast";
 
 const TodoList = () =>{
     const [isEditModalOpen , setIsEditModalOpen] = useState(false)
@@ -68,6 +69,7 @@ const TodoList = () =>{
 
         if(status === 200){
             onCloseEditModal()
+            toast.success("Todo updated successfully !")
         }
        }catch (error) {
            console.log(error);
