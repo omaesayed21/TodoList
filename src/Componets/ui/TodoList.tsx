@@ -1,28 +1,39 @@
-import { useEffect, useState } from "react"
 import Button from "./Button"
 import axiosInstance from "../../config/axios.config"
 import { useQuery } from "@tanstack/react-query";
+import useAuthenticatedQuery from "../../hooks/useAuthenticatedQuery";
 
 const TodoList = () =>{
 
         const userDataString = localStorage.getItem("loggedInUser");
         const userData = userDataString ? JSON.parse(userDataString) : null;
       
-   const {isLoading , data} =  useQuery({
+   const {isLoading , data , error} = useAuthenticatedQuery({url : "/users/me?populate=todos" , 
+   
+   config : {headers : {Authorization : `Bearer ${userData.jwt}`}} ,
+   
+   queryKey : ["todos"]})
+   
 
-    queryKey: ["todos"],
-    queryFn :async () =>{
 
-   const {data} =  await axiosInstance.get("/users/me?populate=todos" , {
-        headers : {
-            Authorization : `Bearer ${userData.jwt}`
-        }
-    })
-    return data
+
+   
+   
+//    useQuery({
+
+//     queryKey: ["todos"],
+//     queryFn :async () =>{
+
+//    const {data} =  await axiosInstance.get("/users/me?populate=todos" , {
+//         headers : {
+//             Authorization : `Bearer ${userData.jwt}`
+//         }
+//     })
+//     return data
      
-   } 
-   })
-console.log(data);
+//    } 
+//    })
+// // console.log(data.todos);
 
 
 
@@ -30,10 +41,15 @@ if(isLoading){
     return <div>Loading...</div>
 }
 
+if(error){
+    return <div>Error</div>
+}
 
     return <>
     <div className=" space-y-1">
-    { data.todos.legnth  ?
+    { data.todos.length  ?  (
+
+
         data.todos.map(todo => (
             <div key={todo.id} className=" flex justify-between items-center  hover:bg-slate-200  duration-300 rounded-md p-2">
             <p  className=" w-full font-semibold">{todo.title}</p>
@@ -43,9 +59,12 @@ if(isLoading){
             </div>
 
         </div>
-        ))
-    :
-        <p className=" text-center text-gray-400">No todos found</p>
+        ))) : (
+
+            <p className=" text-center text-5xl text-gray-500">No todos found</p>
+        )
+
+    
         }   
         
             
