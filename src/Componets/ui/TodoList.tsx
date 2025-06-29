@@ -17,9 +17,13 @@ const TodoList = () =>{
         title : "",
         description : ""
     })
+    const [todoToAdd , setTodoToAdd] = useState({
+        title : "",
+        description : ""
+    })
     const[isUpdateing , setIsUpdating] = useState(false)
     const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
-
+    const [isAddModalOpen , setIsAddModalOpen] = useState(false)
 
 
         const userDataString = localStorage.getItem("loggedInUser");
@@ -52,6 +56,20 @@ const TodoList = () =>{
         setIsEditModalOpen(true)        
     }
 
+// handle add Modal
+    const onCloseAddModal = () => {
+        setTodoToAdd({
+            title : "",
+            description : ""
+        })
+        setIsAddModalOpen(false)
+    }
+    const onOpenAddModal = () => {
+        setIsAddModalOpen(true)        
+    }
+
+
+
 // handle confirm Modal 
     const onCloseConfirmModal = () => {
         setTodoToEdit({
@@ -69,11 +87,15 @@ const TodoList = () =>{
     }
 
 
-   const onChangeHandler = (e :React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+   const onChangeEditHandler = (e :React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
        const {name , value} = e.target
        setTodoToEdit({...todoToEdit , [name] : value})
    }
-   const onSubmitHandler = async (e :React.FormEvent<HTMLFormElement>) => {
+   const onChangeAddHandler = (e :React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+       const {name , value} = e.target
+       setTodoToAdd({...todoToAdd , [name] : value})
+   }
+   const onSubmitEditHandler = async (e :React.FormEvent<HTMLFormElement>) => {
        e.preventDefault()
        setIsUpdating(true)
        const {title , description} = todoToEdit
@@ -92,6 +114,33 @@ const TodoList = () =>{
         if(status === 200){
         onCloseModal()
             toast.success("Todo updated successfully !")
+        }
+       }catch (error) {
+           console.log(error);
+           
+       } finally{
+        setIsUpdating(false)
+       }
+   }
+   const onSubmitAddHandler = async (e :React.FormEvent<HTMLFormElement>) => {
+       e.preventDefault()
+       setIsUpdating(true)
+       const {title , description} = todoToAdd
+       try {
+       const{ status }=       await axiosInstance.post(`/todos` , {data : 
+            {
+                title : title,
+                description : description
+            }
+        } , {
+            headers : {
+                Authorization : `Bearer ${userData.jwt}`
+            }
+        })
+
+        if(status === 200){
+        onCloseAddModal()
+            toast.success("Todo added successfully !")
         }
        }catch (error) {
            console.log(error);
@@ -145,6 +194,11 @@ if(error){
 
     return <>
     <div className=" space-y-1">
+    <div className=" w-fit mx-auto my-10">
+        <Button size={"sm"} onClick={onOpenAddModal}>Add New Todo</Button>
+
+    </div>
+
     { data.todos.length  ?  (
 
 
@@ -168,9 +222,9 @@ if(error){
         {/* Edit Modal  */}
 
         <Modal  isOpen={isEditModalOpen} closeModal={onCloseModal} title="Edit Todo">
-       <form onSubmit={onSubmitHandler} className=" space-y-3">
-       <Input  name="title" value={todoToEdit.title} onChange={onChangeHandler}/>
-        <Textarea name="description" value={todoToEdit.description} onChange={onChangeHandler} />
+       <form onSubmit={onSubmitEditHandler} className=" space-y-3">
+       <Input  name="title" value={todoToEdit.title} onChange={onChangeEditHandler}/>
+        <Textarea name="description" value={todoToEdit.description} onChange={onChangeEditHandler} />
        <div className=" flex gap-2 items-center   space-x-3 mt-3">
        <Button className="bg-indigo-600   hover:bg-indigo-700" isLoading={isUpdateing}>Update</Button>
         <Button   onClick={onCloseModal} variant={"cancel"}>Cancel</Button>
@@ -180,6 +234,23 @@ if(error){
       {/* Delete Modal */}
 
         </Modal>
+       
+       {/* ADD Modal */}
+       
+       <Modal  isOpen={isAddModalOpen} closeModal={onCloseAddModal} title="Add Todo">
+       <form onSubmit={onSubmitAddHandler} className=" space-y-3">
+       <Input  name="title" value={todoToAdd.title} onChange={onChangeAddHandler}/>
+        <Textarea name="description" value={todoToAdd.description} onChange={onChangeAddHandler} />
+       <div className=" flex gap-2 items-center   space-x-3 mt-3">
+       <Button className="bg-indigo-600   hover:bg-indigo-700" isLoading={isUpdateing}>Done</Button>
+        <Button   onClick={onOpenAddModal} variant={"cancel"}>Cancel</Button>
+       </div>
+       </form>
+      
+      {/* Delete Modal */}
+
+        </Modal>
+        {/* delete Modal */}
             <Modal isOpen={isOpenConfirmModal}  closeModal={onCloseConfirmModal}  title={"Are you sure you want to remove this todo from your store ?"}          description="Deleting this todo will remove it permenantly from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action.">
             <div className="flex items-center space-x-3 mt-4">
           <Button variant="danger" onClick={onRemove}>
