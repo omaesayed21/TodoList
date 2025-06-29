@@ -7,6 +7,7 @@ import { Textarea } from "./Textarea";
 import type { ITodo } from "../../Interface";
 import axiosInstance from "../../config/axios.config";
 import toast from "react-hot-toast";
+import TodoSkeleton from "./TodoSkeleton";
 
 const TodoList = () =>{
     const [isEditModalOpen , setIsEditModalOpen] = useState(false)
@@ -36,7 +37,7 @@ const TodoList = () =>{
    
 
 
-// handle Edit Modal
+// handle edit  Modal
    const onCloseModal = () => {
     setTodoToEdit({
         documentId : "",
@@ -45,18 +46,29 @@ const TodoList = () =>{
         description : ""
     })
     setIsEditModalOpen(false)
-setIsOpenConfirmModal(false)
 }
-
     const onOpenModal = (todo :ITodo) => {
         setTodoToEdit(todo)
         setIsEditModalOpen(true)        
     }
+
+// handle confirm Modal 
+    const onCloseConfirmModal = () => {
+        setTodoToEdit({
+            documentId : "",
+            id : 0,
+            title : "",
+            description : ""
+        })
+        setIsOpenConfirmModal(false)
+    }
     const onOpenConfirmModal = (todo :ITodo) => {
         setTodoToEdit(todo)
-        setIsOpenConfirmModal(true)
 
+        setIsOpenConfirmModal(true)
     }
+
+
    const onChangeHandler = (e :React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
        const {name , value} = e.target
        setTodoToEdit({...todoToEdit , [name] : value})
@@ -66,7 +78,7 @@ setIsOpenConfirmModal(false)
        setIsUpdating(true)
        const {title , description} = todoToEdit
        try {
- const{ status }=       await axiosInstance.put(`/todos/${todoToEdit.documentId}` , {data : 
+       const{ status }=       await axiosInstance.put(`/todos/${todoToEdit.documentId}` , {data : 
             {
                 title : title,
                 description : description
@@ -88,27 +100,44 @@ setIsOpenConfirmModal(false)
         setIsUpdating(false)
        }
    }
-//    useQuery({
+const onRemove = async () =>{
+    try{
+    const {status} = await axiosInstance.delete(`/todos/${todoToEdit.documentId}` , 
+    {
+        headers : {
+            Authorization : `Bearer ${userData.jwt}`
+        }
+    })
+    if(status === 200){
+        onCloseConfirmModal();
+        toast.success("Todo deleted successfully !")
+        console.log("Todo deleted successfully !");
+        
 
-//     queryKey: ["todos"],
-//     queryFn :async () =>{
+    }
+    }catch (error) {
+        console.log(error);
+        
+    }
 
-//    const {data} =  await axiosInstance.get("/users/me?populate=todos" , {
-//         headers : {
-//             Authorization : `Bearer ${userData.jwt}`
-//         }
-//     })
-//     return data
-     
-//    } 
-//    })
-// // console.log(data.todos);
+}
 
 
 
 if(isLoading){
-    return <div>Loading...</div>
-}
+    return <>
+    
+    <div className="space-y-1 p-3">
+        {Array.from({ length: 3 }, (_, idx) => (
+          <TodoSkeleton key={idx} />
+        ))}{" "}
+      </div>
+
+    
+    
+    </>
+      
+        }
 
 if(error){
     return <div>Error</div>
@@ -130,7 +159,7 @@ if(error){
         </div>
         ))) : (
 
-            <p className=" text-center text-5xl text-gray-500">No todos found</p>
+            <p className=" text-center text-5xl text-gray-500">No Todos Found</p>
         )
 
         }  
@@ -151,12 +180,12 @@ if(error){
       {/* Delete Modal */}
 
         </Modal>
-            <Modal isOpen={isOpenConfirmModal}  closeModal={onCloseModal}  title={"Are you sure you want to remove this todo from your store ?"}          description="Deleting this todo will remove it permenantly from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action.">
+            <Modal isOpen={isOpenConfirmModal}  closeModal={onCloseConfirmModal}  title={"Are you sure you want to remove this todo from your store ?"}          description="Deleting this todo will remove it permenantly from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action.">
             <div className="flex items-center space-x-3 mt-4">
-          <Button variant="danger">
+          <Button variant="danger" onClick={onRemove}>
             Yes , Remove
           </Button>
-          <Button variant="cancel" type="button" onClick={onCloseModal} >
+          <Button variant="cancel" type="button" onClick={onCloseConfirmModal} >
             Cancel
           </Button>
         </div>      
