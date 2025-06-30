@@ -24,6 +24,7 @@ const TodoList = () =>{
     const[isUpdateing , setIsUpdating] = useState(false)
     const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
     const [isAddModalOpen , setIsAddModalOpen] = useState(false)
+    const [queryVerison , setQueryVerison] = useState(1)
 
 
         const userDataString = localStorage.getItem("loggedInUser");
@@ -33,7 +34,7 @@ const TodoList = () =>{
    
    config : {headers : {Authorization : `Bearer ${userData.jwt}`}} ,
    
-   queryKey : ["todos"  , todoToEdit.documentId]
+   queryKey : ["todos"  , `${queryVerison}`]
 
 
    
@@ -82,7 +83,6 @@ const TodoList = () =>{
     }
     const onOpenConfirmModal = (todo :ITodo) => {
         setTodoToEdit(todo)
-
         setIsOpenConfirmModal(true)
     }
 
@@ -114,6 +114,8 @@ const TodoList = () =>{
         if(status === 200){
         onCloseModal()
             toast.success("Todo updated successfully !")
+            setQueryVerison(prev => prev + 1)        
+
         }
        }catch (error) {
            console.log(error);
@@ -141,6 +143,8 @@ const TodoList = () =>{
         if(status === 200){
         onCloseAddModal()
             toast.success("Todo added successfully !")
+            setQueryVerison(prev => prev + 1)        
+
         }
        }catch (error) {
            console.log(error);
@@ -160,8 +164,7 @@ const onRemove = async () =>{
     if(status === 200){
         onCloseConfirmModal();
         toast.success("Todo deleted successfully !")
-        console.log("Todo deleted successfully !");
-        
+        setQueryVerison(prev => prev + 1)        
 
     }
     }catch (error) {
