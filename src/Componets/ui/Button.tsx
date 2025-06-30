@@ -48,6 +48,7 @@ const Button = ({
   children,
   variant,
   size,
+  type,
   fullWidth,
   className,
   isLoading,
@@ -56,7 +57,8 @@ const Button = ({
 }: ButtonProps) => {
   return (
     <button
-      className={cn(buttonVariants({ variant , size, fullWidth, className }))}
+      type={type}
+      className={cn(buttonVariants({    variant , size, fullWidth, className }))}
       {...props}
       disabled={isLoading}
     >

@@ -43,7 +43,7 @@ const TodoList = () =>{
 
 
 // handle edit  Modal
-   const onCloseModal = () => {
+   const onClosEditeModal = () => {
     setTodoToEdit({
         documentId : "",
         id : 0,
@@ -112,7 +112,7 @@ const TodoList = () =>{
         })
 
         if(status === 200){
-        onCloseModal()
+            onClosEditeModal()
             toast.success("Todo updated successfully !")
             setQueryVerison(prev => prev + 1)        
 
@@ -224,17 +224,16 @@ if(error){
 
         {/* Edit Modal  */}
 
-        <Modal  isOpen={isEditModalOpen} closeModal={onCloseModal} title="Edit Todo">
+        <Modal  isOpen={isEditModalOpen} closeModal={onClosEditeModal} title="Edit Todo">
        <form onSubmit={onSubmitEditHandler} className=" space-y-3">
        <Input  name="title" value={todoToEdit.title} onChange={onChangeEditHandler}/>
         <Textarea name="description" value={todoToEdit.description} onChange={onChangeEditHandler} />
        <div className=" flex gap-2 items-center   space-x-3 mt-3">
        <Button className="bg-indigo-600   hover:bg-indigo-700" isLoading={isUpdateing}>Update</Button>
-        <Button   onClick={onCloseModal} variant={"cancel"}>Cancel</Button>
+        <Button type="button"   onClick={onClosEditeModal} variant={"cancel"}>Cancel</Button>
        </div>
        </form>
       
-      {/* Delete Modal */}
 
         </Modal>
        
@@ -246,7 +245,7 @@ if(error){
         <Textarea name="description" value={todoToAdd.description} onChange={onChangeAddHandler} />
        <div className=" flex gap-2 items-center   space-x-3 mt-3">
        <Button className="bg-indigo-600   hover:bg-indigo-700" isLoading={isUpdateing}>Done</Button>
-        <Button   onClick={onOpenAddModal} variant={"cancel"}>Cancel</Button>
+        <Button  type="button"  onClick={onCloseAddModal} variant={"cancel"}>Cancel</Button>
        </div>
        </form>
       
