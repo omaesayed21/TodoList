@@ -7,6 +7,7 @@ import { Textarea } from "./Textarea";
 import type { ITodo } from "../../Interface";
 import axiosInstance from "../../config/axios.config";
 import toast from "react-hot-toast";
+import { SquarePen , Trash2  } from 'lucide-react';
 import TodoSkeleton from "./TodoSkeleton";
 
 const TodoList = () =>{
@@ -133,8 +134,7 @@ const TodoList = () =>{
             {
                 title : title,
                 description : description,
-                // user : userData.id
-
+                user : userData.id  
             }
         } , {
             headers : {
@@ -197,6 +197,8 @@ if(error){
     return <div>Error</div>
 }
 
+console.log("todos", data.todos);
+
     return <>
     <div className=" space-y-1">
     <div className=" w-fit mx-auto my-10">
@@ -220,8 +222,9 @@ if(error){
             <div key={todo.id} className=" flex justify-between items-center  hover:bg-slate-200  duration-300 rounded-md p-2">
             <p  className=" w-full font-semibold">{todo.title}</p>
             <div className=" flex gap-2 items-center justify-end  space-x-3">
-                <Button  size={"sm"} onClick= {() => onOpenModal(todo)}>Edit</Button>
-                <Button variant={"danger"} size={"sm"}  onClick={() => onOpenConfirmModal(todo)}>Remove</Button>
+             
+                                    <SquarePen onClick= {() => onOpenModal(todo)} className=" w-6 h-6 text-indigo-600 cursor-pointer"></SquarePen>
+                <Trash2 onClick={() => onOpenConfirmModal(todo)} className=" w-6 h-6 text-red-600 cursor-pointer"></Trash2>
             </div>
 
         </div>
