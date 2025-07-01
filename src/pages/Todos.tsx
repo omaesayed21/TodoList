@@ -5,24 +5,25 @@ import type { ITodo } from "../Interface";
 import Paginator from "../Componets/ui/Paginator";
 
 const TodosPage = () => {
-    const [queryVerison , setQueryVerison] = useState(1)
+    const [Page , setPage] = useState<number>(1)
 
     
     const userDataString = localStorage.getItem("loggedInUser");
     const userData = userDataString ? JSON.parse(userDataString) : null;
 
 
-    const {isLoading , data } = useAuthenticatedQuery({url : "/todos" , 
+    const {isLoading , data } = useAuthenticatedQuery({url : `/todos?pagination[pageSize]=10&pagination[page]=${Page}` , 
    
     config : {headers : {Authorization : `Bearer ${userData.jwt}`}} ,
     
-    queryKey : ["pagenatedTodos"  , `${queryVerison}`]
+    queryKey : [`todos-page-${Page}`]
  
- 
-    
-    })
-    console.log(data);
-    
+})
+
+console.log(data);
+
+const onClickPrev = () => setPage(prev => prev - 1)
+const onClickNext = () => setPage(prev => prev + 1)
  
     if(isLoading){
         return <>
@@ -42,7 +43,9 @@ const TodosPage = () => {
   return  <>
     <div className=" max-w-2xl mx-auto my-20 space-y-6">
 
-    { data.data.length  ?  (
+<div className="space-y-6">
+
+{ data.data.length  ?  (
 
 
 data.data.map((todo :ITodo) => (
@@ -56,7 +59,8 @@ data.data.map((todo :ITodo) => (
 )
 
 } 
-<Paginator pageCount={data.pageCount} total={data.total} page={data.page} onClickNext={() => setQueryVerison(queryVerison + 1)} onClickPrev={() => setQueryVerison(queryVerison - 1)} isLoading={isLoading} />
+</div>
+<Paginator pageCount={data.meta.pagination.pageCount}  total={data.meta.pagination.total} page={Page} onClickNext={() => onClickNext()} onClickPrev={() => onClickPrev()} isLoading={isLoading} />
     </div>
  
  </> 

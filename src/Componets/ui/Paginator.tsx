@@ -11,12 +11,12 @@ interface IProps {
     page,
     pageCount,
     onClickPrev,
-    isLoading,
     total,
+    isLoading,
     onClickNext,
   }: IProps) => {
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
         <p className="text-sm text-gray-600 mx-3">
           Page{" "}
           <span className="mx-1 font-semibold text-gray-900 text-md-1">
@@ -24,7 +24,7 @@ interface IProps {
           </span>{" "}
           to
           <span className="mx-1 font-smeibold text-gray-900">{pageCount}</span> of
-          <span className="mx-1 font-semibold text-gray-900">{total}</span>{" "}
+          <span className="mx-1 font-semibold text-gray-900"> {total}</span>{" "}
           Records
         </p>
   
