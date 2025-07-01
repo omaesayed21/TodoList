@@ -89,7 +89,7 @@ const TodoList = () =>{
     }
 
     const onGenrateTodo = async () => {
-        for(let i = 0 ; i < 10 ; i ++){
+        for(let i = 0 ; i < 100 ; i ++){
             try {
                 const{ data }=          await axiosInstance.post(`/todos` , {data : 
                              {
