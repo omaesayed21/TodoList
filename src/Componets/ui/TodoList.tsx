@@ -7,7 +7,7 @@ import { Textarea } from "./Textarea";
 import type { ITodo } from "../../Interface";
 import axiosInstance from "../../config/axios.config";
 import toast from "react-hot-toast";
-import { SquarePen , Trash2 , Plus  } from 'lucide-react';
+import { SquarePen , Trash2 , Plus   } from 'lucide-react';
 import TodoSkeleton from "./TodoSkeleton";
 
 const TodoList = () =>{
@@ -26,6 +26,7 @@ const TodoList = () =>{
     const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
     const [isAddModalOpen , setIsAddModalOpen] = useState(false)
     const [queryVerison , setQueryVerison] = useState(1)
+    const [serachQuery , setSearchQuery] = useState("")
 
 
         const userDataString = localStorage.getItem("loggedInUser");
@@ -210,7 +211,10 @@ const uniqueTodos: ITodo[] = Array.from(
     ).values()
   );
   
-
+  const filteredTodos = uniqueTodos.filter(todo =>
+    todo.title.toLowerCase().includes(serachQuery.toLowerCase())
+  );
+  
     return <>
     <div className=" space-y-1">
     <div className=" w-fit mx-auto my-10">
@@ -218,7 +222,24 @@ const uniqueTodos: ITodo[] = Array.from(
           <div className="  h-9 bg-gray-300 rounded-md dark:bg-gray-700 w-12"></div>
           <div className="  h-9 bg-gray-300 rounded-md dark:bg-gray-700 w-12"></div>
         </div>            : <div className=" flex items-center space-x-2">
-        <Button size={"sm"} onClick={onOpenAddModal}>Add New Todo</Button>
+        <div className="w-full max-w-2xl mx-auto my-10 flex items-center px-2">
+
+
+  <Plus
+    className="w-10 h-10 mr-36  text-white bg-indigo-700 rounded-md p-2 cursor-pointer shadow-md transition duration-200"
+    onClick={onOpenAddModal}
+  />
+    <Input
+    type="text"
+    placeholder="Search Todos..."
+    className="w-[400px] px-3 py-3 text-lg border border-indigo-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-700"
+    value={serachQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+  />
+</div>
+
+
+  
         </div>
 
  }        
@@ -226,12 +247,15 @@ const uniqueTodos: ITodo[] = Array.from(
 
     </div>
 
-    { uniqueTodos.length  ?  (
+    { filteredTodos.length  ?  (
 
 
-        uniqueTodos.map((todo :ITodo) => (
+filteredTodos.map((todo :ITodo) => (
             <div key={todo.id} className=" flex justify-between items-center  hover:bg-slate-200  duration-300 rounded-md p-2">
+                <div className="flex items-center">
+                <span>{todo.id}- </span>
             <p  className=" w-full font-semibold">{todo.title}</p>
+                </div>
             <div className=" flex gap-2 items-center justify-end  space-x-3">
              
                                     <SquarePen onClick= {() => onOpenModal(todo)} className=" w-6 h-6 text-indigo-600 cursor-pointer"></SquarePen>

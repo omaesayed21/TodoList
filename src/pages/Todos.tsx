@@ -107,7 +107,11 @@ const onChangeSortBy = (e :React.ChangeEvent<HTMLSelectElement>) => setSortBy(St
 
 data.data.map((todo :ITodo) => (
     <div key={todo.id} className=" flex justify-between items-center  hover:bg-slate-200  duration-300 rounded-md p-2">
+    <div className="flex items-center">
+    <span>{todo.id}- </span>
     <h3  className=" w-full font-semibold">{todo.title}</h3>
+
+    </div>
 
 </div>
 ))) : (
