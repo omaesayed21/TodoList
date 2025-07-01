@@ -88,9 +88,34 @@ const TodoList = () =>{
         setIsOpenConfirmModal(true)
     }
 
-    // const onGenrateTodo = () => {
-        
-    // }
+    const onGenrateTodo = async () => {
+        for(let i = 0 ; i < 10 ; i ++){
+            try {
+                const{ data }=          await axiosInstance.post(`/todos` , {data : 
+                             {
+                                 title : faker.word.words(5),
+                                 description : faker.lorem.paragraph(2),
+                                 user : userData.id  
+                             }
+                         } , {
+                             headers : {
+                                 Authorization : `Bearer ${userData.jwt}`
+                             }
+                         })
+                         console.log(data);
+                         
+                        
+                        }catch (error) {
+                            console.log(error);
+                            
+                        }
+             
+        }
+    
+     
+    }
+
+
 
 
    const onChangeEditHandler = (e :React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -207,7 +232,9 @@ if(error){
 // console.log("todos", data.todos);
 
 const uniqueTodos: ITodo[] = Array.from(
-    new Map(data.todos.map((todo) => [todo.documentId, todo])).values()
+    new Map<string, ITodo>(
+      data.todos.map((todo) => [todo.documentId, todo])
+    ).values()
   );
   
 
@@ -219,7 +246,7 @@ const uniqueTodos: ITodo[] = Array.from(
           <div className="  h-9 bg-gray-300 rounded-md dark:bg-gray-700 w-12"></div>
         </div>            : <div className=" flex items-center space-x-2">
         <Button size={"sm"} onClick={onOpenAddModal}>Add New Todo</Button>
-        <Button size={"sm"}  variant={"outline"}>Genrate Todo</Button>
+        <Button size={"sm"}  variant={"outline"} onClick={onGenrateTodo}>Genrate Todo</Button>
         </div>
 
  }        
