@@ -12,7 +12,7 @@ interface  IuseAuthenticatedQuery {
 const useAuthenticatedQuery =  ( {url , config , queryKey }: IuseAuthenticatedQuery) => {
     return useQuery({
 
-        queryKey: [queryKey],
+        queryKey,
         queryFn :async () =>{
     
        const {data} =  await axiosInstance.get(url , config)

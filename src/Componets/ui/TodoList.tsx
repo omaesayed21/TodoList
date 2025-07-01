@@ -9,6 +9,7 @@ import axiosInstance from "../../config/axios.config";
 import toast from "react-hot-toast";
 import { SquarePen , Trash2  } from 'lucide-react';
 import TodoSkeleton from "./TodoSkeleton";
+import { faker } from '@faker-js/faker';
 
 const TodoList = () =>{
     const [isEditModalOpen , setIsEditModalOpen] = useState(false)
@@ -87,6 +88,10 @@ const TodoList = () =>{
         setIsOpenConfirmModal(true)
     }
 
+    // const onGenrateTodo = () => {
+        
+    // }
+
 
    const onChangeEditHandler = (e :React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
        const {name , value} = e.target
@@ -125,6 +130,8 @@ const TodoList = () =>{
         setIsUpdating(false)
        }
    }
+
+
    const onSubmitAddHandler = async (e :React.FormEvent<HTMLFormElement>) => {
        e.preventDefault()
        setIsUpdating(true)
@@ -197,7 +204,12 @@ if(error){
     return <div>Error</div>
 }
 
-console.log("todos", data.todos);
+// console.log("todos", data.todos);
+
+const uniqueTodos: ITodo[] = Array.from(
+    new Map(data.todos.map((todo) => [todo.documentId, todo])).values()
+  );
+  
 
     return <>
     <div className=" space-y-1">
@@ -215,10 +227,10 @@ console.log("todos", data.todos);
 
     </div>
 
-    { data.todos.length  ?  (
+    { uniqueTodos.length  ?  (
 
 
-        data.todos.map((todo :ITodo) => (
+        uniqueTodos.map((todo :ITodo) => (
             <div key={todo.id} className=" flex justify-between items-center  hover:bg-slate-200  duration-300 rounded-md p-2">
             <p  className=" w-full font-semibold">{todo.title}</p>
             <div className=" flex gap-2 items-center justify-end  space-x-3">
