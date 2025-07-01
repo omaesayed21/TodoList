@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import axiosInstance from "../config/axios.config"
-import type { Axios, AxiosRequestConfig } from "axios"
+import type {  AxiosRequestConfig } from "axios"
 
 interface  IuseAuthenticatedQuery {
     queryKey: string[],

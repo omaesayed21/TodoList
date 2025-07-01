@@ -7,9 +7,8 @@ import { Textarea } from "./Textarea";
 import type { ITodo } from "../../Interface";
 import axiosInstance from "../../config/axios.config";
 import toast from "react-hot-toast";
-import { SquarePen , Trash2  } from 'lucide-react';
+import { SquarePen , Trash2 , Plus  } from 'lucide-react';
 import TodoSkeleton from "./TodoSkeleton";
-import { faker } from '@faker-js/faker';
 
 const TodoList = () =>{
     const [isEditModalOpen , setIsEditModalOpen] = useState(false)
@@ -88,33 +87,7 @@ const TodoList = () =>{
         setIsOpenConfirmModal(true)
     }
 
-    const onGenrateTodo = async () => {
-        for(let i = 0 ; i < 100 ; i ++){
-            try {
-                const{ data }=          await axiosInstance.post(`/todos` , {data : 
-                             {
-                                 title : faker.word.words(5),
-                                 description : faker.lorem.paragraph(2),
-                                 user : userData.id  
-                             }
-                         } , {
-                             headers : {
-                                 Authorization : `Bearer ${userData.jwt}`
-                             }
-                         })
-                         console.log(data);
-                         
-                        
-                        }catch (error) {
-                            console.log(error);
-                            
-                        }
-             
-        }
-    
-     
-    }
-
+ 
 
 
 
@@ -246,7 +219,6 @@ const uniqueTodos: ITodo[] = Array.from(
           <div className="  h-9 bg-gray-300 rounded-md dark:bg-gray-700 w-12"></div>
         </div>            : <div className=" flex items-center space-x-2">
         <Button size={"sm"} onClick={onOpenAddModal}>Add New Todo</Button>
-        <Button size={"sm"}  variant={"outline"} onClick={onGenrateTodo}>Genrate Todo</Button>
         </div>
 
  }        
