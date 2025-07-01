@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 import axiosInstance from "../config/axios.config";
 import type { AxiosError } from "axios";
 import type { IErrorResponse } from "../Interface";
+import { Eye, EyeOff } from "lucide-react";
+
 
 const LoginPage = () => {
     interface IFormInput {
@@ -28,16 +30,31 @@ const LoginPage = () => {
     });
 
     // Render Login Form
-    const renderLoginForm = LoginForm.map(({ name, placeholder, type, Validation } , index ) => (
-        <div key={index}>
-            <Input
-                type={type}
-                placeholder={placeholder}
-                {...register(name, Validation)}
-            />
-            {errors[name] && <InputErrorMessage msg={errors[name].message} />}
-        </div>
-    ))
+    const [showPassword, setShowPassword] = useState(false);
+
+    const renderLoginForm = LoginForm.map(({ name, placeholder, type, Validation }, index) => {
+        const isPassword = type === "password";
+    
+        return (
+            <div key={index} className="relative">
+                <Input
+                    type={isPassword ? (showPassword ? "text" : "password") : type}
+                    placeholder={placeholder}
+                    {...register(name, Validation)}
+                />
+                {isPassword && (
+                    <div
+                        className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                        onClick={() => setShowPassword(prev => !prev)}
+                    >
+                        {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                    </div>
+                )}
+                {errors[name] && <InputErrorMessage msg={errors[name].message} />}
+            </div>
+        );
+    });
+    
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         console.log(data);

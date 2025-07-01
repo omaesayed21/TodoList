@@ -127,12 +127,14 @@ const TodoList = () =>{
    const onSubmitAddHandler = async (e :React.FormEvent<HTMLFormElement>) => {
        e.preventDefault()
        setIsUpdating(true)
-       const {title , description} = todoToAdd
+       const {title , description } = todoToAdd
        try {
        const{ status }=       await axiosInstance.post(`/todos` , {data : 
             {
                 title : title,
-                description : description
+                description : description,
+                // user : userData.id
+
             }
         } , {
             headers : {
@@ -140,7 +142,7 @@ const TodoList = () =>{
             }
         })
 
-        if(status === 200){
+        if(status === 201){
         onCloseAddModal()
             toast.success("Todo added successfully !")
             setQueryVerison(prev => prev + 1)        
@@ -161,7 +163,7 @@ const onRemove = async () =>{
             Authorization : `Bearer ${userData.jwt}`
         }
     })
-    if(status === 200){
+    if(status === 204){
         onCloseConfirmModal();
         toast.success("Todo deleted successfully !")
         setQueryVerison(prev => prev + 1)        
@@ -198,7 +200,16 @@ if(error){
     return <>
     <div className=" space-y-1">
     <div className=" w-fit mx-auto my-10">
+ { (isLoading) ?          <div className="flex items-center space-x-2">
+          <div className="  h-9 bg-gray-300 rounded-md dark:bg-gray-700 w-12"></div>
+          <div className="  h-9 bg-gray-300 rounded-md dark:bg-gray-700 w-12"></div>
+        </div>            : <div className=" flex items-center space-x-2">
         <Button size={"sm"} onClick={onOpenAddModal}>Add New Todo</Button>
+        <Button size={"sm"}  variant={"outline"}>Genrate Todo</Button>
+        </div>
+
+ }        
+      
 
     </div>
 
