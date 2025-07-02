@@ -11,6 +11,7 @@ import RegisterPage from "../pages/Register";
 import TodosPage from "../pages/Todos";
 import ErrorHandler from "../Componets/ui/erorrs/ErorrHandler";
 import PageNotFound from "../pages/PageNotFound";
+import ProfilePage from "../pages/ProfilePage";
 
 const getUser = () => {
   const userDataString = localStorage.getItem("loggedInUser");
@@ -41,7 +42,7 @@ const router = createBrowserRouter(
               redirectPath="/login"
               data={getUser()}
             >
-              <h2>Profile page</h2>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />
